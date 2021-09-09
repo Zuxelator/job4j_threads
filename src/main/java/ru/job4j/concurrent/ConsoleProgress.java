@@ -1,7 +1,6 @@
 package ru.job4j.concurrent;
 
 public class ConsoleProgress implements Runnable {
-    private String[] array = {"\\", "|", "/", "-"};
 
     public static void main(String[] args) throws InterruptedException {
         Thread progress = new Thread(new ConsoleProgress());
@@ -12,6 +11,7 @@ public class ConsoleProgress implements Runnable {
 
     @Override
     public void run() {
+        String[] array = {"\\", "|", "/", "-"};
         int i = 0;
         while (!Thread.currentThread().isInterrupted()) {
             if (i == array.length) {
