@@ -16,8 +16,7 @@ public class Wget implements Runnable {
     @Override
     public void run() {
         /* Скачать файл*/
-        String file = url;
-        try (BufferedInputStream in = new BufferedInputStream(new URL(file).openStream());
+        try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
              FileOutputStream fileOutputStream = new FileOutputStream("file.xml")) {
             byte[] dataBuffer = new byte[1024];
             int bytesRead;
@@ -26,7 +25,7 @@ public class Wget implements Runnable {
             long finish = System.currentTimeMillis();
             long diff = finish - start;
             int sleep = 0;
-            if (dataBuffer.length / diff < speed && diff != 0) {
+            if (diff != 0 && dataBuffer.length / diff < speed) {
                 sleep = dataBuffer.length / speed;
             }
             fileOutputStream.write(dataBuffer, 0, bytesRead);
