@@ -2,46 +2,34 @@ package ru.job4j.userstorage;
 
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @ThreadSafe
 public class UserStorage {
     @GuardedBy("this")
-    private List<User> storage = new ArrayList<>();
+    private Map<Integer, User> storage = new HashMap<>();
 
     public synchronized boolean add(User user) {
-        return storage.add(user);
+        boolean rsl = user != null;
+        if (rsl) {
+            storage.put(user.getId(), user);
+        }
+        return rsl;
     }
 
-    public boolean update(User user) {
-        User rsl = findById(user.getId());
-        rsl.setAmount(user.getAmount());
-        return true;
+    public synchronized boolean update(User user) {
+        return add(user);
     }
 
     public synchronized boolean delete(User user) {
-        return storage.remove(user);
+        return storage.remove(user.getId(), user);
     }
 
-    public void transfer(int fromId, int toId, int amount) {
-        User from = findById(fromId);
+    public synchronized void transfer(int fromId, int toId, int amount) {
+        User from = storage.get(fromId);
         from.setAmount(from.getAmount() - amount);
-        User to = findById(toId);
+        User to = storage.get(toId);
         to.setAmount(to.getAmount() + amount);
-    }
-
-    private synchronized User findById(int id) {
-        User rsl = null;
-        for (User user : storage) {
-            if (user.getId() == id) {
-                rsl = user;
-            }
-        }
-        if (rsl == null) {
-            throw new IllegalArgumentException("No such element with id: " + id);
-        }
-        return rsl;
     }
 }
