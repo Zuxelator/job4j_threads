@@ -12,14 +12,18 @@ public class UserStorage {
 
     public synchronized boolean add(User user) {
         boolean rsl = user != null;
-        if (rsl) {
-            storage.put(user.getId(), user);
-        }
+        storage.putIfAbsent(user.getId(), user);
         return rsl;
     }
 
     public synchronized boolean update(User user) {
-        return add(user);
+        boolean rsl = false;
+        if (storage.get(user.getId()) != null) {
+            storage.replace(user.getId(), user);
+        }  else {
+            rsl = add(user);
+        }
+        return rsl;
     }
 
     public synchronized boolean delete(User user) {
@@ -28,8 +32,14 @@ public class UserStorage {
 
     public synchronized void transfer(int fromId, int toId, int amount) {
         User from = storage.get(fromId);
-        from.setAmount(from.getAmount() - amount);
         User to = storage.get(toId);
+        if (from == null || to == null) {
+            throw new IllegalArgumentException("Пользователь не найден");
+        }
+        if (from.getAmount() < amount) {
+            throw new IllegalArgumentException("Не достаточно средств для перевода");
+        }
+        from.setAmount(from.getAmount() - amount);
         to.setAmount(to.getAmount() + amount);
     }
 }
