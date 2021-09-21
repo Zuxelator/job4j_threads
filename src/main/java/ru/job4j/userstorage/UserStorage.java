@@ -17,11 +17,12 @@ public class UserStorage {
     }
 
     public synchronized boolean update(User user) {
-        boolean rsl = false;
-        if (storage.get(user.getId()) != null) {
+        boolean rsl;
+        if (storage.get(user.getId()) == null) {
+            rsl = false;
+        } else {
             storage.replace(user.getId(), user);
-        }  else {
-            rsl = add(user);
+            rsl = true;
         }
         return rsl;
     }
