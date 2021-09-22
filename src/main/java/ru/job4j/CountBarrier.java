@@ -13,11 +13,8 @@ public class CountBarrier {
 
     public void count() {
         synchronized (monitor) {
-            while (count != total) {
-                count++;
-                notifyAll();
-            }
-
+            count++;
+            notifyAll();
         }
     }
 
