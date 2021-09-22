@@ -11,20 +11,11 @@ public class UserStorage {
     private Map<Integer, User> storage = new HashMap<>();
 
     public synchronized boolean add(User user) {
-        boolean rsl = user != null;
-        storage.putIfAbsent(user.getId(), user);
-        return rsl;
+        return storage.putIfAbsent(user.getId(), user) == null;
     }
 
     public synchronized boolean update(User user) {
-        boolean rsl;
-        if (storage.get(user.getId()) == null) {
-            rsl = false;
-        } else {
-            storage.replace(user.getId(), user);
-            rsl = true;
-        }
-        return rsl;
+        return storage.replace(user.getId(), user) != null;
     }
 
     public synchronized boolean delete(User user) {
