@@ -9,11 +9,7 @@ public class SimpleBlockQueueTest {
                     System.out.println(Thread.currentThread().getName() + " started");
                     while (count < 5) {
                         count++;
-                        try {
-                            queue.offer(3);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        queue.offer(3);
                         System.out.println(queue.getSize() + " " + Thread.currentThread().getName());
                         try {
                             Thread.sleep(200);

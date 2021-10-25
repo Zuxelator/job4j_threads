@@ -17,10 +17,14 @@ public class SimpleBlockingQueue<T> {
         this.capacity = capacity;
     }
 
-    public void offer(T value) throws InterruptedException {
+    public void offer(T value) {
         synchronized (this) {
             if (queue.size() == capacity) {
-                wait();
+                try {
+                    wait();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             queue.add(value);
             notifyAll();
@@ -37,6 +41,10 @@ public class SimpleBlockingQueue<T> {
             notifyAll();
         }
         return rsl;
+    }
+
+    public boolean isEmpty() {
+        return queue.size() == 0;
     }
 
     public synchronized int getSize() {
